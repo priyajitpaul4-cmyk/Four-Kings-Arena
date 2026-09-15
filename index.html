@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<title>Four Kings Arena — 4-Player Chess</title>
+<meta name="description" content="Four Kings Arena: a four-player chess arena. Play against three computer opponents or face-to-face on one device.">
+<meta name="theme-color" content="#151225">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icons/icon-192.svg">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/board.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ===================== TOP NAV (desktop) ===================== -->
+  <header class="topnav">
+    <div class="brand" data-nav="home">
+      <span class="brand-crown">♛</span>
+      <span class="brand-text">Four Kings <em>Arena</em></span>
+    </div>
+    <nav class="nav-links">
+      <button data-nav="home">Home</button>
+      <button data-nav="setup">Play</button>
+      <button data-nav="history">History</button>
+      <button data-nav="stats">Profile</button>
+      <button data-nav="settings">Settings</button>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <!-- ===================== HOME ===================== -->
+    <section class="screen active" id="screen-home">
+      <div class="hero">
+        <p class="hero-eyebrow">Four players. One board. One champion.</p>
+        <h1>Four Kings <em>Arena</em></h1>
+        <p class="hero-sub">4-Player Chess • Play • Compete • Solve</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" data-start-preset="1v3">Play vs Computers</button>
+          <button class="btn btn-secondary" data-start-preset="4human">4-Player Local</button>
+        </div>
+        <button class="link-btn hero-invite-link" id="hero-invite-btn">Invite friends (local room code)</button>
+      </div>
+
+      <div class="home-stats" id="home-stats-cards"></div>
+
+      <div class="home-recent">
+        <h2>Recent games</h2>
+        <div id="home-recent-list" class="recent-list"></div>
+      </div>
+    </section>
+
+    <!-- ===================== SETUP ===================== -->
+    <section class="screen" id="screen-setup">
+      <h1 class="screen-title">New Game</h1>
+
+      <div class="setup-card presets-card">
+        <h3>Quick setup</h3>
+        <div class="preset-row">
+          <button class="preset-btn" data-preset="1v3">1 Human + 3 AI</button>
+          <button class="preset-btn" data-preset="2v2">2 Humans + 2 AI</button>
+          <button class="preset-btn" data-preset="3v1">3 Humans + 1 AI</button>
+          <button class="preset-btn" data-preset="4human">4 Humans</button>
+          <button class="preset-btn" data-preset="4ai">4 AI — Watch Mode</button>
+        </div>
+        <p class="hint" id="mode-summary">1 human seat, 3 computer seats.</p>
+      </div>
+
+      <div class="setup-grid">
+        <div class="setup-card" id="players-card">
+          <h3>Seats &amp; Colours</h3>
+          <div id="player-rows"></div>
+        </div>
+
+        <div class="setup-card" id="ai-difficulty-card">
+          <h3>AI Difficulty</h3>
+          <select id="ai-level-select" class="select"></select>
+          <p class="hint" id="ai-level-desc"></p>
+        </div>
+
+        <div class="setup-card">
+          <h3>Time Control</h3>
+          <select id="time-control-select" class="select"></select>
+          <div class="custom-time" id="custom-time-row" style="display:none">
+            <label>Minutes <input type="number" id="custom-minutes" min="1" max="180" value="10"></label>
+            <label>Increment (s) <input type="number" id="custom-increment" min="0" max="60" value="0"></label>
+          </div>
+        </div>
+
+        <div class="setup-card">
+          <h3>Board Theme</h3>
+          <select id="board-theme-select" class="select">
+            <option value="classic">Classic</option>
+            <option value="tournament">Tournament</option>
+            <option value="wood">Wood</option>
+            <option value="midnight">Midnight</option>
+            <option value="emerald">Emerald</option>
+            <option value="royal">Royal</option>
+            <option value="golden">Golden</option>
+          </select>
+        </div>
+
+        <div class="setup-card">
+          <h3>Piece Style</h3>
+          <select id="piece-style-select" class="select">
+            <option value="modern">Modern (layered SVG)</option>
+            <option value="minimal">Minimal (glyph)</option>
+          </select>
+          <p class="hint">Two real, distinct styles are shipped in this build — see README for the full styles roadmap.</p>
+        </div>
+
+        <div class="setup-card">
+          <h3>Preferences</h3>
+          <label class="toggle-row"><input type="checkbox" id="opt-sound" checked> Sound</label>
+          <label class="toggle-row"><input type="checkbox" id="opt-animations" checked> Animations</label>
+          <label class="toggle-row"><input type="checkbox" id="opt-legal" checked> Show legal moves</label>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-block" id="start-game-btn">Start Game</button>
+    </section>
+
+    <!-- ===================== GAME ===================== -->
+    <section class="screen" id="screen-game">
+      <div class="arena" id="arena">
+        <div class="panel" id="panel-yellow"></div>
+        <div class="panel" id="panel-blue"></div>
+        <div class="board-wrap" id="board-wrap">
+          <div id="board" class="fka-board"></div>
+        </div>
+        <div class="panel" id="panel-green"></div>
+        <div class="panel" id="panel-red"></div>
+      </div>
+
+      <div class="game-side">
+        <div class="controls-bar" id="controls-bar">
+          <button class="ctrl-btn" id="ctrl-new">New</button>
+          <button class="ctrl-btn" id="ctrl-pause">Pause</button>
+          <button class="ctrl-btn" id="ctrl-flip">Flip</button>
+          <button class="ctrl-btn" id="ctrl-sound">🔊</button>
+          <button class="ctrl-btn" id="ctrl-undo">Undo</button>
+          <button class="ctrl-btn danger" id="ctrl-resign">Resign</button>
+          <button class="ctrl-btn" id="ctrl-draw">Draw</button>
+          <button class="ctrl-btn" id="ctrl-invite">Invite</button>
+        </div>
+
+        <div class="history-panel" id="history-panel">
+          <h3 id="history-toggle">Move history <span class="drawer-caret">▾</span></h3>
+          <div id="move-history" class="move-list"></div>
+        </div>
+      </div>
+
+      <div class="modal-overlay" id="result-overlay" style="display:none">
+        <div class="modal result-modal">
+          <div class="result-icon" id="result-icon">🏆</div>
+          <h2 id="result-title">Game Over</h2>
+          <p id="result-detail"></p>
+          <div class="result-stats" id="result-stats"></div>
+          <div class="modal-actions">
+            <button class="btn btn-secondary" data-nav="home">Home</button>
+            <button class="btn btn-primary" id="result-rematch">New Game</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-overlay" id="pause-overlay" style="display:none">
+        <div class="modal">
+          <h2>Paused</h2>
+          <p>Clocks are stopped.</p>
+          <div class="modal-actions">
+            <button class="btn btn-secondary" data-nav="home">Quit to Home</button>
+            <button class="btn btn-primary" id="resume-btn">Resume</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== HISTORY ===================== -->
+    <section class="screen" id="screen-history">
+      <h1 class="screen-title">Game History</h1>
+      <div id="history-list" class="history-list"></div>
+    </section>
+
+    <!-- ===================== STATS / PROFILE ===================== -->
+    <section class="screen" id="screen-stats">
+      <h1 class="screen-title">Profile &amp; Statistics</h1>
+      <div class="profile-card">
+        <div class="profile-avatar" id="profile-avatar">♟</div>
+        <div>
+          <input type="text" id="profile-name" class="name-input" value="Player">
+          <p class="rating-line"><span id="profile-rating">1000</span> rating · <span id="profile-category">Amateur</span></p>
+          <p class="fine-print">In-app rating only — not an official FIDE rating.</p>
+        </div>
+      </div>
+      <div class="stats-grid" id="stats-grid"></div>
+      <div class="chart-card">
+        <h3>Results breakdown</h3>
+        <svg id="stats-chart" viewBox="0 0 300 120" class="stats-chart"></svg>
+      </div>
+    </section>
+
+    <!-- ===================== SETTINGS ===================== -->
+    <section class="screen" id="screen-settings">
+      <h1 class="screen-title">Settings</h1>
+      <div class="settings-list">
+        <div class="settings-row">
+          <span>Theme</span>
+          <select id="set-theme" class="select"><option value="dark">Dark</option><option value="light">Light</option></select>
+        </div>
+        <div class="settings-row">
+          <span>Board theme</span>
+          <select id="set-board-theme" class="select">
+            <option value="classic">Classic</option>
+            <option value="tournament">Tournament</option>
+            <option value="wood">Wood</option>
+            <option value="midnight">Midnight</option>
+            <option value="emerald">Emerald</option>
+            <option value="royal">Royal</option>
+            <option value="golden">Golden</option>
+          </select>
+        </div>
+        <div class="settings-row">
+          <span>Piece style</span>
+          <select id="set-piece-style" class="select">
+            <option value="modern">Modern (layered SVG)</option>
+            <option value="minimal">Minimal (glyph)</option>
+          </select>
+        </div>
+        <div class="settings-row"><span>Sound</span><label class="switch"><input type="checkbox" id="set-sound"><span></span></label></div>
+        <div class="settings-row"><span>Animations</span><label class="switch"><input type="checkbox" id="set-animations"><span></span></label></div>
+        <div class="settings-row"><span>Show legal moves</span><label class="switch"><input type="checkbox" id="set-legal"><span></span></label></div>
+        <div class="settings-row"><span>Show coordinates</span><label class="switch"><input type="checkbox" id="set-coords"><span></span></label></div>
+        <div class="settings-row"><span>Move confirmation</span><label class="switch"><input type="checkbox" id="set-confirm"><span></span></label></div>
+        <div class="settings-row">
+          <span>Low-time warning</span>
+          <select id="set-warning" class="select">
+            <option value="10">10s</option><option value="20">20s</option><option value="30">30s</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== BOTTOM NAV (mobile) ===================== -->
+  <nav class="bottomnav">
+    <button data-nav="home"><span class="ic">♛</span>Home</button>
+    <button data-nav="setup"><span class="ic">▶</span>Play</button>
+    <button data-nav="history"><span class="ic">☰</span>History</button>
+    <button data-nav="stats"><span class="ic">◆</span>Profile</button>
+    <button data-nav="settings"><span class="ic">⚙</span>Settings</button>
+  </nav>
+
+  <!-- ===================== INVITE MODAL (room-code UI, no backend) ===================== -->
+  <div class="modal-overlay" id="invite-overlay" style="display:none">
+    <div class="modal">
+      <h2>Invite Friends</h2>
+      <p class="hint">This generates a local room code you can share. There is no online server behind it yet — everyone still needs to be at this device for 4-Player Local, or you can use it as a placeholder while online multiplayer is built.</p>
+      <div class="room-code" id="room-code">FK-0000</div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="invite-copy">Copy Code</button>
+        <button class="btn btn-primary" id="invite-share">Share</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/chess-engine.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/timer.js"></script>
+<script src="js/board.js"></script>
+<script src="js/arena.js"></script>
+<script src="js/pieces.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "name": "Four Kings Arena — 4-Player Chess",
+  "short_name": "Four Kings Arena",
+  "description": "A four-player chess arena: play against three computer opponents or face-to-face on one device.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f0d1a",
+  "theme_color": "#151225",
+  "icons": [
+    { "src": "assets/icons/icon-192.svg", "sizes": "192x192", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "assets/icons/icon-512.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
