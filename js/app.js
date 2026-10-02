@@ -435,6 +435,18 @@
     e.target.textContent = settings.sound ? '🔊' : '🔇';
   });
 
+  document.getElementById('ctrl-hint').addEventListener('click', () => {
+    if (!game || game.paused || game.engine.status !== 'active') return;
+    const player = game.engine.currentPlayer();
+    const moves = game.engine.allLegalMoves(player);
+    if (!moves.length) { showToast('No legal moves available.'); return; }
+    const move = moves[Math.floor(Math.random() * moves.length)];
+    game.board.selected = move.from.slice();
+    game.board.legalTargets = game.engine.legalMovesForPiece(move.from[0], move.from[1]);
+    game.board.render();
+    showToast('A possible move is highlighted.');
+  });
+
   document.getElementById('ctrl-undo').addEventListener('click', () => {
     if (!game || game.engine.status !== 'active') return;
     const humanCount = CHESS_CONST.PLAYERS.filter(c => game.config.seats[c].type === 'human').length;
@@ -524,13 +536,20 @@
       if (!eliminated && msLeft < 10000) clockClasses.push('critical-time');
 
       el.className = 'panel p-' + p + (cur === p ? ' active-turn' : '') + (eliminated ? ' eliminated' : '');
+      const ratings = { yellow: 2090, green: 1532, blue: 1288, red: 1572 };
+      const displayName = game.config.names[p];
+      const initial = (displayName || meta.label).trim().charAt(0).toUpperCase();
       el.innerHTML = `
         <div class="panel-identity">
-          <span class="panel-swatch" style="background:${meta.hex}"></span>
-          <span class="panel-name">${escapeHtml(game.config.names[p])}${isAI ? ' 🤖' : ''}</span>
+          <span class="player-avatar" style="--player-color:${meta.hex}" aria-hidden="true">${initial}</span>
+          <span class="panel-player-copy">
+            <span class="panel-name">${escapeHtml(displayName)}${isAI ? ' <small>AI</small>' : ''}</span>
+            <span class="panel-rating">(${ratings[p]}) · ${meta.label}</span>
+          </span>
+          <strong class="panel-score" aria-label="Score ${caps.length}">${caps.length}</strong>
         </div>
-        <div class="${clockClasses.join(' ')}" id="clock-${p}">${timedOut ? 'TIME OUT' : ChessClocks.format(msLeft)}</div>
-        <div class="panel-status ${e.isInCheck(p) ? 'status-check' : ''}">${statusText}</div>
+        <div class="${clockClasses.join(' ')}" id="clock-${p}" aria-label="${meta.label} timer">${timedOut ? 'TIME OUT' : ChessClocks.format(msLeft)}</div>
+        <div class="panel-status ${e.isInCheck(p) ? 'status-check' : ''}">${statusText || '&nbsp;'}</div>
         <div class="panel-captured">${capIcons}</div>
       `;
     });
