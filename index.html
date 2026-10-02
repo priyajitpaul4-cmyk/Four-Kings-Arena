@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/board.css">
 <link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/game-premium.css">
 </head>
 <body>
 <div id="app">
@@ -126,7 +127,12 @@
 
     <!-- ===================== GAME ===================== -->
     <section class="screen" id="screen-game">
-      <div class="arena" id="arena">
+      <header class="game-header" aria-label="Game header">
+        <button class="game-header-btn" data-nav="home" aria-label="Back to home">‹</button>
+        <div class="game-title"><span>♛</span> FOUR KINGS <em>ARENA</em></div>
+        <button class="game-header-btn" data-nav="settings" aria-label="Open settings">⚙</button>
+      </header>
+      <div class="arena" id="arena" aria-label="Four-player chess arena">
         <div class="panel" id="panel-yellow"></div>
         <div class="panel" id="panel-blue"></div>
         <div class="board-wrap" id="board-wrap">
@@ -137,15 +143,18 @@
       </div>
 
       <div class="game-side">
-        <div class="controls-bar" id="controls-bar">
-          <button class="ctrl-btn" id="ctrl-new">New</button>
-          <button class="ctrl-btn" id="ctrl-pause">Pause</button>
-          <button class="ctrl-btn" id="ctrl-flip">Flip</button>
-          <button class="ctrl-btn" id="ctrl-sound">🔊</button>
-          <button class="ctrl-btn" id="ctrl-undo">Undo</button>
-          <button class="ctrl-btn danger" id="ctrl-resign">Resign</button>
-          <button class="ctrl-btn" id="ctrl-draw">Draw</button>
-          <button class="ctrl-btn" id="ctrl-invite">Invite</button>
+        <div class="controls-bar" id="controls-bar" aria-label="Game controls">
+          <button class="ctrl-btn primary-control" id="ctrl-new" aria-label="Restart game"><span class="ctrl-icon">↻</span><span>Restart</span></button>
+          <button class="ctrl-btn primary-control" id="ctrl-flip" aria-label="Rotate pieces and board"><span class="ctrl-icon">♜</span><span>Pieces</span></button>
+          <button class="ctrl-btn primary-control" id="ctrl-undo" aria-label="Undo last move"><span class="ctrl-icon">↶</span><span>Undo</span></button>
+          <button class="ctrl-btn primary-control" id="ctrl-hint" aria-label="Show a possible move"><span class="ctrl-icon">💡</span><span>Hint</span></button>
+          <div class="secondary-controls" aria-label="More game controls">
+            <button class="ctrl-btn" id="ctrl-pause">Pause</button>
+            <button class="ctrl-btn" id="ctrl-sound" aria-label="Toggle sound">🔊</button>
+            <button class="ctrl-btn danger" id="ctrl-resign">Resign</button>
+            <button class="ctrl-btn" id="ctrl-draw">Draw</button>
+            <button class="ctrl-btn" id="ctrl-invite">Invite</button>
+          </div>
         </div>
 
         <div class="history-panel" id="history-panel">
